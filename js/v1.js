@@ -49,14 +49,8 @@ function makeInput() {
   for (var i = 1; i <= 45; i++) {
     var template =
       '<div class="col form-check">' +
-      '<input class="form-check-input" type="checkbox" name="lottoNum" id="input' +
-      i +
-      '" value="' +
-      i +
-      '" checked>' +
-      '<label class="form-check-label" for="input' +
-      i +
-      '">' +
+      '<input class="form-check-input" type="checkbox" name="lottoNum" id="input'+ i +'" value="' + i +'" checked>' +
+      '<label class="form-check-label" for="input'+ i +'">'+
       i +
       "</label>" +
       "</div>";
