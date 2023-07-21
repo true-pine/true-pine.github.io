@@ -1,31 +1,46 @@
 let arr = [];
+let suffleInterval = 0;
+let loopFlag = false;
 
 $(document).ready(function() {
   initNumber();
   
   $('#btn_select').on('click', function() {
-    var index = Math.floor(Math.random() * 100);
-    while(index < 1 || index > (arr.length-1)) {
-      index = Math.floor(Math.random() * 100);
+    if(loopFlag) {
+      return;
     }
-    
-    var randomVal = arr[index];
-    arr.splice(index, 1);
-    
-    $('div.log').last().append(
-      '<span style="margin-right: 10px;">'+ randomVal +'</span>'
-    );
-    
-    suffle(arr);
-    
-    if($('span', $('div.log')).length % 6 == 0) {
+
+    loopFlag = true;
+    startSuffle();
+    $('#btn_select').text('STOP');
+
+    var interval = setInterval(() => {
+      var index = Math.floor(Math.random() * 100);
+      while(index < 1 || index > (arr.length-1)) {
+        index = Math.floor(Math.random() * 100);
+      }
+      
+      var randomVal = arr[index];
+      arr.splice(index, 1);
+      
+      $('div.log').last().append(
+        '<span style="margin-right: 10px;">'+ randomVal +'</span>'
+      );
+      
+      if($('span', $('div.log')).length % 6 == 0) {
+        loopFlag = false;
+        clearInterval(interval);
+        clearInterval(suffleInterval);
+        $('#btn_select').text('START');
+
         $('div.container').append(
             '<div class="row">'+
             '<div class="col d-flex justify-content-center log"></div>'+
             '</div>'
         )
         initNumber();
-    }
+      }
+    }, 4500);
   });
 });
 
@@ -46,5 +61,10 @@ function initNumber() {
   for(let i = 1; i <= 45; i++) {
     arr.push(i);
   }
-  suffle(arr);
+}
+
+function startSuffle() {
+  suffleInterval = setInterval(() => {
+    suffle(arr);
+  }, 0);
 }
