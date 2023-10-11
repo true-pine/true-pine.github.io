@@ -10,21 +10,24 @@
 ############################
 
 # Name of website
-title: My Website
+title: 개발도 스피드런하자
 
 # Your name to show in the footer
-author: Some Person
+author: truesol
 
 ###############################################
 # --- List of links in the navigation bar --- #
 ###############################################
 
 navbar-links:
-  About Me: "aboutme"
-  Resources:
-    - Beautiful Jekyll: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
+  #about me: "aboutme"
+  category:
+    - java: "category/java"
+    - cs: "category/cs"
+    - server: "category/server"
+    - database: "category/database"
+    - os: "category/os"
+    - spring: "category/spring"
 
 ################
 # --- Logo --- #
@@ -32,14 +35,15 @@ navbar-links:
 
 # Image to show in the navigation bar - works best with a square image
 # Remove this parameter if you don't want an image in the navbar
-avatar: "/assets/img/avatar-icon.png"
+avatar: "/assets/img/avatar-icon.JPG"
 
 # By default, the image is cut into a circle. You can disable this behaviour by setting 'round-avatar: false'
 round-avatar: true
 
 # If you want to have an image logo in the top-left corner instead of having the title of the website,
 # then specify the following parameter
-#title-img: /path/to/image
+# 헤더 왼쪽 위에 타이틀 대신 이미지를 적용할 때 사용
+# title-img: /assets/img/avatar-icon.png
 
 
 #####################################
@@ -50,13 +54,13 @@ round-avatar: true
 # You can change the order that they show up on the page by changing the order here.
 # Uncomment the links you want to show and add your information to each one.
 social-network-links:
-  email: "someone@example.com"
-  rss: true  # remove this line if you don't want to show an RSS link at the bottom
-  facebook: deanattali
-  github: daattali
-  twitter: daattali
-  patreon: DeanAttali
-  youtube: c/daattali
+  email: "s9567695@gmail.com"
+  #rss: true  # remove this line if you don't want to show an RSS link at the bottom
+  #facebook: deanattali
+  #github: daattali
+  #twitter: daattali
+  #patreon: DeanAttali
+  #youtube: c/daattali
 #  medium: yourname
 #  reddit: yourname
 #  linkedin: daattali
@@ -96,7 +100,7 @@ share-links-active:
 
 # How to display the link to your website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "MyWebsite.com"
+url-pretty: "true-pine.github.io"
 
 # Excerpt word length - Truncate the excerpt of each post on the feed page to the specified number of words
 excerpt_length: 50
@@ -200,10 +204,10 @@ footer-hover-col: "#0085A1"
 # "repository" (make sure the repository is public), (2) Enable Issues in your repository,
 # (3) Install the Utterances app in your repository https://github.com/apps/utterances
 # See more details about the parameters below at https://utteranc.es/
-#utterances:
-#  repository: # GitHub username/repository eg. "daattali/beautiful-jekyll"
-#  issue-term: title   # Mapping between blog posts and GitHub issues
-#  theme: github-light # Utterances theme
+utterances:
+ repository: true-pine/true-pine.github.io # GitHub username/repository eg. "daattali/beautiful-jekyll"
+ issue-term: pathname   # Mapping between blog posts and GitHub issues
+ theme: github-light # Utterances theme
 #  label: blog-comments # Label that will be assigned to GitHub Issues created by Utterances
 
 # To use Staticman comments, uncomment the following section. You may leave the reCaptcha
@@ -241,7 +245,7 @@ footer-hover-col: "#0085A1"
 ################
 
 # Ruby Date Format to show dates of posts
-date_format: "%B %-d, %Y"
+date_format: "%Y.%m.%d %A"
 
 # Facebook App ID
 #fb_app_id: ""
@@ -251,10 +255,10 @@ date_format: "%B %-d, %Y"
 #################################################################################
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Toronto"
+timezone: "Asia/Seoul"
 markdown: kramdown
 highlighter: rouge
-permalink: /:year-:month-:day-:title/
+permalink: /:categories/:title
 paginate: 5
 
 kramdown:
@@ -268,8 +272,8 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      comments: true  # add comments to all blog posts
-      social-share: true # add social media sharing buttons to all blog posts
+      comments: true  # add comments to all blog posts / 기본적으로 댓글 기능 켬
+      social-share: false # add social media sharing buttons to all blog posts / 기본적으로 SNS 공유 기능을 끔
   -
     scope:
       path: "" # any file that's not a post will be a "page" layout by default
@@ -286,6 +290,8 @@ exclude:
   - README.md
   - screenshot.png
   - docs/
+  - sample_post_1.md
+  - sample_post_2.md
 
 plugins:
   - jekyll-paginate

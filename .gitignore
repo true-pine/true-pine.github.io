@@ -1,0 +1,6 @@
+#directory
+_site/
+
+#file
+.DS_Store
+Gemfile.lock
