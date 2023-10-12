@@ -15,7 +15,15 @@
       {%- for link in site.navbar-links -%}
         {%- if link[1].first %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ link[0] }}</a>
+            <!-- {%- assign parent = link[0] -%} -->
+            {%- capture parent -%}
+              {%- if link[0] == "category" -%}
+                {{ "카테고리" }}
+              {%- else -%}
+                {{ link[0] }}
+              {%- endif -%}
+            {%- endcapture -%}
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ parent }}</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               {%- for childlink in link[1] -%}
                 {%- for linkparts in childlink %}
@@ -34,7 +42,7 @@
         <li class="nav-item">
           <a class="nav-link" id="nav-search-link" href="#" title="Search">
             <span id="nav-search-icon" class="fa fa-search"></span>
-            <span id="nav-search-text">Search</span>
+            <span id="nav-search-text">검색</span>
           </a>
         </li>
       {%- endif -%}

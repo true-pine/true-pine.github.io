@@ -45,8 +45,26 @@ layout: page
         </a>
   
         <p class="post-meta">
-          {% assign date_format = site.date_format | default: "%B %-d, %Y" %}
-          Posted on {{ post.date | date: date_format }}
+          {%- assign today = post.date | date: "%a" -%}
+          {%- capture today -%}
+            {%- case today -%}
+              {%- when "Sun" -%}
+                {{ "일" }}
+              {%- when "Mon" -%}
+                {{ "월" }}
+              {%- when "Tue" -%}
+                {{ "화" }}
+              {%- when "Wed" -%}
+                {{ "수" }}
+              {%- when "Thu" -%}
+                {{ "목" }}
+              {%- when "Fri" -%}
+                {{ "금" }}
+              {%- when "Sat" -%}
+                {{ "토" }}
+            {%- endcase -%}
+          {%- endcapture -%}
+          작성일: {{ post.date | date: "%Y.%m.%d" }} ({{ today }})
         </p>
   
         {% if thumbnail != "" %}
@@ -78,7 +96,7 @@ layout: page
   
         {% if site.feed_show_tags != false and post.tags.size > 0 %}
         <div class="blog-tags">
-          <span>Tags:</span>
+          <span>태그:</span>
           <!-- role="list" needed so that `list-style: none` in Safari doesn't remove the list semantics -->
           <ul class="d-inline list-inline" role="list">
             {% for tag in post.tags %}

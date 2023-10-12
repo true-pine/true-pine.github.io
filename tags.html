@@ -1,10 +1,7 @@
 ---
 layout: page
-title: 'Tag Index'
+title: 태그
 ---
-
-{% assign date_format = site.date_format | default: "%B %-d, %Y" %}
-
 {%- capture site_tags -%}
     {%- for tag in site.tags -%}
         {{- tag | first -}}{%- unless forloop.last -%},{%- endunless -%}
@@ -27,7 +24,26 @@ title: 'Tag Index'
             <div class="tag-entry">
                 <a href="{{ post.url | relative_url }}">{{- post.title | strip_html -}}</a>
                 <div class="entry-date">
-                    <time datetime="{{- post.date | date_to_xmlschema -}}">{{- post.date | date: date_format -}}</time>
+                    {%- assign today = post.date | date: "%a" -%}
+                    {%- capture today -%}
+                        {%- case today -%}
+                            {%- when "Sun" -%}
+                            {{ "일" }}
+                            {%- when "Mon" -%}
+                            {{ "월" }}
+                            {%- when "Tue" -%}
+                            {{ "화" }}
+                            {%- when "Wed" -%}
+                            {{ "수" }}
+                            {%- when "Thu" -%}
+                            {{ "목" }}
+                            {%- when "Fri" -%}
+                            {{ "금" }}
+                            {%- when "Sat" -%}
+                            {{ "토" }}
+                        {%- endcase -%}
+                    {%- endcapture -%}
+                    <time datetime="{{- post.date | date_to_xmlschema -}}">{{- post.date | date: "%Y.%m.%d" -}} ({{- today -}})</time>
                 </div>
             </div>
         {%- endfor -%}
