@@ -58,12 +58,31 @@
                     {{ "토" }}
                 {%- endcase -%}
               {%- endcapture -%}
-              작성일: {{ page.date | date: "%Y.%m.%d" }} ({{ today }})
+              작성일: {{ page.date | date: "%Y.%m.%d" }} ({{ today }}) {{ page.time | date: "%H:%M" }}
             </span>
             {% if page.last-updated %}
+              {%- assign today2 = page.last-updated | date: "%a" -%}
+              {%- capture today2 -%}
+                {%- case today2 -%}
+                  {%- when "Sun" -%}
+                    {{ "일" }}
+                  {%- when "Mon" -%}
+                    {{ "월" }}
+                  {%- when "Tue" -%}
+                    {{ "화" }}
+                  {%- when "Wed" -%}
+                    {{ "수" }}
+                  {%- when "Thu" -%}
+                    {{ "목" }}
+                  {%- when "Fri" -%}
+                    {{ "금" }}
+                  {%- when "Sat" -%}
+                    {{ "토" }}
+                {%- endcase -%}
+              {%- endcapture -%}
               <span class="post-meta">
                 <span class="d-none d-md-inline middot">&middot;</span>
-                Last updated {{ page.last-updated | date: date_format }}
+                수정일: {{ page.last-updated | date: "%Y.%m.%d" }} ({{ today2 }}) {{ page.last-updated | date: "%H:%M" }}
               </span>
             {% endif %}
             {% if page.readtime %}
@@ -113,12 +132,31 @@
                     {{ "토" }}
                 {%- endcase -%}
               {%- endcapture -%}
-              작성일: {{ page.date | date: "%Y.%m.%d" }} ({{ today }})
+              작성일: {{ page.date | date: "%Y.%m.%d" }} ({{ today }}) {{ page.created-time | date: "%H:%M" }}
             </span>
             {% if page.last-updated %}
+              {%- assign today2 = page.last-updated | date: "%a" -%}
+              {%- capture today2 -%}
+                {%- case today2 -%}
+                  {%- when "Sun" -%}
+                    {{ "일" }}
+                  {%- when "Mon" -%}
+                    {{ "월" }}
+                  {%- when "Tue" -%}
+                    {{ "화" }}
+                  {%- when "Wed" -%}
+                    {{ "수" }}
+                  {%- when "Thu" -%}
+                    {{ "목" }}
+                  {%- when "Fri" -%}
+                    {{ "금" }}
+                  {%- when "Sat" -%}
+                    {{ "토" }}
+                {%- endcase -%}
+              {%- endcapture -%}
               <span class="post-meta">
                 <span class="d-none d-md-inline middot">&middot;</span>
-                Last updated {{ page.last-updated | date: date_format }}
+                수정일: {{ page.last-updated | date: "%Y.%m.%d" }} ({{ today2 }}) {{ page.last-updated | date: "%H:%M" }}
               </span>
             {% endif %}
             {% if page.readtime %}

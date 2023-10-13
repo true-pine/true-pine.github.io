@@ -64,7 +64,7 @@ layout: page
                 {{ "토" }}
             {%- endcase -%}
           {%- endcapture -%}
-          작성일: {{ post.date | date: "%Y.%m.%d" }} ({{ today }})
+          작성일: {{ post.date | date: "%Y.%m.%d" }} ({{ today }}) {{ post.created-time | date: "%H:%M" }}
         </p>
   
         {% if thumbnail != "" %}
