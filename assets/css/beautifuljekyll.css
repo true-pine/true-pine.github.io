@@ -12,6 +12,8 @@ layout: null
   font-style: normal;
 }
 
+.highlighter-rouge { margin: 15px 0; }
+
 html {
   font-size: 100%
 }
