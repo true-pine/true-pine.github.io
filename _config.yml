@@ -22,12 +22,14 @@ author: truesol
 navbar-links:
   #about me: "aboutme"
   category:
-    - java: "category/java"
     - cs: "category/cs"
-    - server: "category/server"
     - database: "category/database"
+    - java: "category/java"
+    - mac: "category/mac"
     - os: "category/os"
+    - server: "category/server"
     - spring: "category/spring"
+    
 
 ################
 # --- Logo --- #
