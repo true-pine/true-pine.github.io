@@ -14,12 +14,12 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: 참소리 # the main title
+title: 렉토 # the main title
 
-tagline: 멈추지 않고 조금씩 전진하는 개발자 참소리입니다. # it will display as the sub-title
+tagline: 중요한 것은 멈추지 않는 것 # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
-  참소리의 깃허브 블로그
+  렉토의 깃허브 블로그
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -34,7 +34,7 @@ github:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: 참소리
+  name: 렉토
   email: s9567695@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
