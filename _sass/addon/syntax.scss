@@ -127,6 +127,13 @@ code {
   blockquote & {
     color: inherit;
   }
+
+  &.custom-highlight {
+    color: #ef9c03;
+    font-weight: bold;
+    font-size: unset;
+    background-color: unset;
+  }
 }
 
 td.rouge-code {
