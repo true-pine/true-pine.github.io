@@ -99,6 +99,7 @@ code {
   -ms-hyphens: none;
   hyphens: none;
   color: var(--code-color);
+  tab-size: 4;  // add
 
   &.highlighter-rouge {
     font-size: $code-font-size;
