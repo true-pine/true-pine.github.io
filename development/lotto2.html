@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>랜덤 숫자 선택기</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+    }
+    .checkbox-container {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .checkbox-container label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .button-container {
+      margin-bottom: 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    #history {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>1에서 45까지의 숫자를 선택하세요</h1>
+    <div class="button-container">
+      <button onclick="toggleCheckboxes(true)">모두 선택</button>
+      <button onclick="toggleCheckboxes(false)">모두 해제</button>
+    </div>
+    <div class="checkbox-container" id="checkboxContainer">
+      <!-- 체크박스가 동적으로 추가될 공간 -->
+    </div>
+    <button onclick="pickRandomNumber()">랜덤 숫자 출력</button>
+    <div id="result">
+      <p>선택한 숫자의 합: 0</p>
+      <p>작은 수(23보다 작은 수): 0</p>
+      <p>큰 수(23 이상인 수): 0</p>
+      <p>홀수: 0</p>
+      <p>짝수: 0</p>
+      <div id="history">선택된 숫자 기록: 없음</div>
+    </div>
+  </div>
+
+  <script>
+    // 체크박스 생성
+    const checkboxContainer = document.getElementById('checkboxContainer');
+    for (let i = 1; i <= 45; i++) {
+      const label = document.createElement('label');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = i;
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(i));
+      checkboxContainer.appendChild(label);
+    }
+
+    // 체크박스 모두 선택/해제 함수
+    function toggleCheckboxes(state) {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = state;
+      });
+    }
+
+    // 카운트 변수 및 합
+    let smallCount = 0;
+    let largeCount = 0;
+    let oddCount = 0;
+    let evenCount = 0;
+    let sum = 0;
+    let history = []; // 랜덤 숫자 기록
+
+    // 주차를 계산하는 함수
+    function getCurrentWeek() {
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 1); // 해당 연도의 첫날
+      const daysSinceStartOfYear = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+      return Math.floor(daysSinceStartOfYear / 7); // 주차 계산
+    }
+
+    // 쿠키에서 curWeek와 baseSeed를 불러오는 함수
+    function getStoredData() {
+      const curWeek = parseInt(localStorage.getItem('curWeek') || '0');
+      const baseSeed = parseInt(localStorage.getItem('baseSeed') || '1150');
+      return { curWeek, baseSeed };
+    }
+
+    // curWeek와 baseSeed를 갱신하는 함수
+    function setStoredData(curWeek, baseSeed) {
+      localStorage.setItem('curWeek', curWeek);
+      localStorage.setItem('baseSeed', baseSeed);
+    }
+
+    // 주마다 시드를 계산하는 함수
+    function getWeeklySeed() {
+      let { curWeek, baseSeed } = getStoredData(); // 현재 주와 시드 값을 가져옴
+      const currentWeek = getCurrentWeek(); // 현재 주를 계산
+
+      if (curWeek === 0) {
+        // curWeek가 없으면 (초기화 상태일 때), 현재 주를 계산하여 저장
+        curWeek = currentWeek;
+        setStoredData(curWeek, baseSeed); // 초기값 저장
+      }
+
+      let seed = baseSeed;
+
+      if (curWeek === currentWeek) {
+        // 현재 주와 저장된 주가 같으면 시드를 그대로 사용
+        seed = baseSeed;
+      } else {
+        // 현재 주와 저장된 주가 다르면 시드를 1 증가시키고, curWeek와 baseSeed를 갱신
+        seed = baseSeed + 1;
+        setStoredData(currentWeek, seed); // curWeek와 baseSeed 갱신
+      }
+
+      return seed; // 시드를 반환
+    }
+
+    // 랜덤 시드 기반 생성 함수
+    function seededRandom(seed) {
+      let value = seed;
+      return function () {
+        value = (value * 9301 + 49297) % 233280;
+        return value / 233280;
+      };
+    }
+
+    // 랜덤 숫자 선택 및 조건 처리 함수
+    function pickRandomNumber() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+      const selectedNumbers = Array.from(checkboxes)
+        .map(cb => Number(cb.value))
+        .filter(num => !history.includes(num)); // 이미 선택된 숫자는 제외
+
+      if (selectedNumbers.length === 0) {
+        alert('선택 가능한 숫자가 없습니다!');
+        return;
+      }
+
+      // 주 단위로 증가된 시드 기반 랜덤 생성기
+      const seed = getWeeklySeed();
+      const random = seededRandom(seed + Date.now()); // 시드 기반 랜덤 생성기
+
+      // 랜덤 숫자 선택
+      const randomIndex = Math.floor(random() * selectedNumbers.length);
+      const randomNumber = selectedNumbers[randomIndex];
+
+      // 조건 처리
+      sum += randomNumber;
+
+      if (randomNumber < 23) {
+        smallCount++;
+      } else {
+        largeCount++;
+      }
+
+      if (randomNumber % 2 === 0) {
+        evenCount++;
+      } else {
+        oddCount++;
+      }
+
+      // 기록 업데이트
+      history.push(randomNumber);
+
+      // 결과 출력
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `
+        <p>선택한 숫자의 합: ${sum}</p>
+        <p>작은 수(23보다 작은 수): ${smallCount}</p>
+        <p>큰 수(23 이상인 수): ${largeCount}</p>
+        <p>홀수: ${oddCount}</p>
+        <p>짝수: ${evenCount}</p>
+        <div id="history">선택된 숫자 기록: ${history.join(', ')}</div>
+      `;
+    }
+  </script>
+</body>
+</html>
