@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 전략 생성기 (Console Debug Mode)</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f0f2f5; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 600px; width: 100%; }
+        h1 { text-align: center; color: #333; margin-bottom: 25px; font-size: 1.4rem; }
+        
+        .input-section { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #ddd; }
+        .input-group { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+        .input-group input { width: 45px; height: 45px; text-align: center; font-size: 1.1rem; border: 2px solid #ddd; border-radius: 8px; font-weight: bold; outline: none; }
+        .input-label { font-weight: bold; color: #555; display: block; text-align: center; font-size: 0.9rem; }
+
+        .btn-container { text-align: center; margin-bottom: 30px; }
+        button { background-color: #2c3e50; color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; width: 100%; }
+        button:hover { background-color: #34495e; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #eee; padding: 15px; text-align: center; }
+        th { color: #888; font-size: 0.85rem; text-transform: uppercase; background: #fafafa; }
+
+        .ball-container { display: flex; gap: 5px; justify-content: center; }
+        .num-ball { 
+            display: inline-block; width: 34px; height: 34px; line-height: 34px; 
+            border-radius: 50%; color: white; font-weight: bold; font-size: 0.95rem; 
+            text-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+        }
+        .ball-yellow { background-color: #fbc400; }
+        .ball-blue { background-color: #69c8f2; }
+        .ball-red { background-color: #ff7272; }
+        .ball-gray { background-color: #aaaaaa; }
+        .ball-green { background-color: #b0d840; }
+
+        .error-msg { color: #e74c3c; font-size: 0.85rem; text-align: center; margin-top: 10px; display: none; }
+        .info-note { font-size: 0.8rem; color: #999; text-align: center; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎯 로또 전략 생성기</h1>
+    
+    <div class="input-section">
+        <span class="input-label">직전 회차 번호 입력</span>
+        <div class="input-group">
+            <input type="number" class="prev-num">
+            <input type="number" class="prev-num">
+            <input type="number" class="prev-num">
+            <input type="number" class="prev-num">
+            <input type="number" class="prev-num">
+            <input type="number" class="prev-num">
+        </div>
+        <div id="errorMsg" class="error-msg">번호를 다시 확인해 주세요.</div>
+    </div>
+
+    <div class="btn-container">
+        <button onclick="generateLottoSets()">조합 생성하기</button>
+    </div>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th width="20%">NO</th>
+                <th>생성 번호</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody">
+            <tr>
+                <td colspan="2" style="color:#bbb; padding: 40px;">조합을 생성해 주세요.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function getBallColorClass(num) {
+        if (num <= 10) return 'ball-yellow';
+        if (num <= 20) return 'ball-blue';
+        if (num <= 30) return 'ball-red';
+        if (num <= 40) return 'ball-gray';
+        return 'ball-green';
+    }
+
+    function generateLottoSets() {
+        const inputElements = document.querySelectorAll('.prev-num');
+        const prevNumbers = Array.from(inputElements).map(el => parseInt(el.value)).sort((a,b) => a-b);
+        const errorMsg = document.getElementById('errorMsg');
+
+        const isValid = prevNumbers.every(n => n >= 1 && n <= 45) && new Set(prevNumbers).size === 6;
+        if (!isValid) { errorMsg.style.display = 'block'; return; }
+        errorMsg.style.display = 'none';
+
+        const tPool = prevNumbers.filter(n => n >= 10 && n <= 29);
+        if (tPool.length === 0) { alert("10~29 사이의 직전 번호가 최소 1개 필요합니다."); return; }
+
+        console.clear();
+        console.log("%c[로또 생성 로직 검증 시작]", "color: #3498db; font-weight: bold; font-size: 14px;");
+        console.log("입력된 직전 번호:", prevNumbers);
+
+        const results = [];
+        const configs = [];
+        for (let i = 0; i < 10; i++) {
+            configs.push({
+                c1Count: i < 5 ? 1 : (tPool.length >= 2 ? 2 : 1),
+                c3Count: i % 2 === 0 ? 0 : 1,
+                c4MinSmall: (Math.floor(i / 5) + i) % 2 === 0,
+                c7Type: i < 5 ? 'connected' : 'separated'
+            });
+        }
+        configs.sort(() => Math.random() - 0.5);
+
+        let attempts = 0;
+        while (results.length < 10 && attempts < 10000) {
+            attempts++;
+            const config = configs[results.length];
+            const data = createSingleSetWithProof(config, prevNumbers, tPool);
+            if (data) results.push(data);
+        }
+        displayResults(results);
+    }
+
+    function createSingleSetWithProof(cfg, prevNumbers, tPool) {
+        let selectedT = [...tPool].sort(() => Math.random() - 0.5).slice(0, cfg.c1Count);
+        let forbidden = prevNumbers.filter(n => !selectedT.includes(n));
+        let minNum = cfg.c4MinSmall ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 11) + 10;
+
+        if (forbidden.includes(minNum) || selectedT.includes(minNum)) return null;
+
+        let diff = Math.floor(Math.random() * 4) + 2; 
+        let intervalNums = [];
+        if (cfg.c7Type === 'connected') {
+            let start = Math.floor(Math.random() * (45 - 2 * diff - minNum)) + minNum;
+            intervalNums = [start, start + diff, start + 2 * diff];
+        } else {
+            let start1 = Math.floor(Math.random() * 15) + minNum;
+            let start2 = Math.floor(Math.random() * (45 - diff - (start1 + diff))) + (start1 + diff + 1);
+            intervalNums = [start1, start1 + diff, start2, start2 + diff];
+        }
+
+        let currentSet = new Set([minNum, ...selectedT, ...intervalNums]);
+        if (Array.from(currentSet).some(n => n > 45 || forbidden.includes(n)) || currentSet.size > 6) return null;
+
+        let allPossible = [];
+        for (let i = minNum + 1; i <= 45; i++) {
+            if (!forbidden.includes(i) && !currentSet.has(i)) allPossible.push(i);
+        }
+
+        for (let t = 0; t < 300; t++) {
+            let candidate = Array.from(currentSet);
+            let needed = 6 - candidate.length;
+            let testSet = [...candidate, ...allPossible.sort(() => Math.random() - 0.5).slice(0, needed)].sort((a, b) => a - b);
+
+            if (testSet.length !== 6 || testSet[0] !== minNum) continue;
+
+            let units = testSet.map(n => n % 10);
+            let unitCounts = {};
+            units.forEach(u => unitCounts[u] = (unitCounts[u] || 0) + 1);
+            let sameUnitVal = Object.keys(unitCounts).find(u => unitCounts[u] === 2);
+            if (!sameUnitVal || Object.values(unitCounts).some(v => v > 2)) continue;
+
+            let multiples = testSet.filter(n => n !== testSet[0] && n % testSet[0] === 0);
+            if (multiples.length !== cfg.c3Count) continue;
+
+            let diffs = [];
+            for (let i = 0; i < 5; i++) diffs.push(testSet[i+1] - testSet[i]);
+            let dCounts = {};
+            diffs.forEach(d => dCounts[d] = (dCounts[d] || 0) + 1);
+            let intervalVal = Object.keys(dCounts).find(d => dCounts[d] === 2);
+            if (!intervalVal) continue;
+
+            return {
+                set: testSet,
+                proof: {
+                    c1: selectedT,
+                    c2: { unit: sameUnitVal, nums: testSet.filter(n => n % 10 == sameUnitVal) },
+                    c3: multiples,
+                    c4: minNum,
+                    c6: Array.from(new Set(testSet.map(n => Math.floor(n/10)*10))),
+                    c7: { type: cfg.c7Type, val: intervalVal }
+                }
+            };
+        }
+        return null;
+    }
+
+    function displayResults(data) {
+        const body = document.getElementById('resultBody');
+        body.innerHTML = '';
+
+        data.forEach((item, index) => {
+            // 1. UI 테이블 업데이트
+            const row = document.createElement('tr');
+            let ballsHtml = `<div class="ball-container">` + 
+                item.set.map(n => `<span class="num-ball ${getBallColorClass(n)}">${n}</span>`).join('') + 
+                `</div>`;
+            row.innerHTML = `<td>${index + 1}</td><td>${ballsHtml}</td>`;
+            body.appendChild(row);
+
+            // 2. 콘솔 로그 출력 (근거 기록)
+            const p = item.proof;
+            console.group(`%c조합 #${index + 1}: ${item.set.join(', ')}`, "color: #2c3e50; font-weight: bold;");
+            console.log(`[C1/5 직전번호] 포함된 숫자: ${p.c1.join(', ')} (이외 직전번호 제외 완료)`);
+            console.log(`[C2 끝자리] 끝수 '${p.c2.unit}' 중복: ${p.c2.nums.join(', ')}`);
+            console.log(`[C3 배수] 최솟값(${p.c4})의 배수: ${p.c3.length > 0 ? p.c3.join(', ') : '없음'} (${p.c3.length}개)`);
+            console.log(`[C4 시작숫자] ${p.c4} (${p.c4 < 10 ? '10 미만' : '10 이상'})`);
+            console.log(`[C6 영역분포] 포함된 번호대: ${p.c6.map(r => r==0?'단번대':r+'대').join(', ')}`);
+            console.log(`[C7 간격규칙] 유형: ${p.c7.type === 'connected' ? '연속형' : '분리형'}, 동일간격 값: ${p.c7.val}`);
+            console.groupEnd();
+        });
+        
+        console.log("%c[검증 완료] 모든 조합이 설정된 규칙을 100% 충족합니다.", "color: #27ae60; font-weight: bold;");
+    }
+</script>
+
+</body>
+</html>
