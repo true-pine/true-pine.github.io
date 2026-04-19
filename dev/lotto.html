@@ -10,9 +10,15 @@
         h1 { text-align: center; color: #333; margin-bottom: 25px; font-size: 1.4rem; }
         
         .input-section { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #ddd; }
-        .input-group { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+        .input-group { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
         .input-group input { width: 45px; height: 45px; text-align: center; font-size: 1.1rem; border: 2px solid #ddd; border-radius: 8px; font-weight: bold; outline: none; }
         .input-label { font-weight: bold; color: #555; display: block; text-align: center; font-size: 0.9rem; }
+
+        @media (max-width: 480px) {
+            .container { padding: 20px; }
+            .input-group { gap: 5px; }
+            .input-group input { width: 38px; height: 38px; font-size: 1rem; }
+        }
 
         .btn-container { text-align: center; margin-bottom: 30px; }
         button { background-color: #2c3e50; color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; width: 100%; }
